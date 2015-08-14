@@ -124,6 +124,7 @@ phone application needs to be embeded to the wearable application
 
 Connection between wearable and phone
 https://youtu.be/OopjNYlqTQ4
+http://stackoverflow.com/questions/25413162/sending-data-to-android-wear-device
 - thru DATA ITEMS and MESSAGES framework
  DATA ITEMS
   - Key- value pairs
