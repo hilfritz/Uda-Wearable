@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="line_width">40dp</dimen>
+    <dimen name="line_height">1dp</dimen>
+
+    <dimen name="high_low_text_size">32sp</dimen>
+    <dimen name="date_text_size">28sp</dimen>
+    <dimen name="time_text_size">36sp</dimen>
+</resources>

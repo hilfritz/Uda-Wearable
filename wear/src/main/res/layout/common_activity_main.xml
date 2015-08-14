@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/time"
+        android:textStyle="bold"
+        tools:text="time here"
+        android:fontFamily="sans-serif-condensed-light"
+        android:textSize="@dimen/time_text_size"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:layout_above="@+id/date"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:id="@+id/date"
+        android:layout_height="wrap_content"
+        tools:text="date here"
+        android:fontFamily="sans-serif-condensed-light"
+        android:textSize="@dimen/high_low_text_size"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:layout_above="@+id/line"
+        />
+
+    <View
+        android:layout_width="@dimen/line_width"
+        android:layout_height="@dimen/line_height"
+        android:background="@android:color/white"
+        android:layout_centerInParent="true"
+        android:id="@+id/line"
+        ></View>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/line"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        >
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_muzei"
+            android:id="@+id/imageStatus"
+            />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/high"
+            android:layout_weight="1"
+            tools:text="99"
+            android:fontFamily="sans-serif-condensed-light"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textSize="@dimen/high_low_text_size"
+            android:textColor="@android:color/white"
+            />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/low"
+            android:layout_weight="1"
+            tools:text="1"
+            android:fontFamily="sans-serif-condensed-light"
+            android:textSize="@dimen/high_low_text_size"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            />
+    </LinearLayout>
+</RelativeLayout>
