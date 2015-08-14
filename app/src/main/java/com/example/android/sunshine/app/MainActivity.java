@@ -24,10 +24,8 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -40,21 +38,9 @@ import com.example.android.sunshine.app.data.WeatherContract;
 import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.api.Api;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Result;
-import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.common.api.zza;
-import com.google.android.gms.common.api.zze;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.wearable.Wearable;
 
-import java.io.FileDescriptor;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements ForecastFragment.Callback {
 
@@ -346,30 +332,9 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
 
 
 
-    GoogleApiClient mGoogleApiclient;
 
     private void setUpForWear(){
-        mGoogleApiclient = new GoogleApiClient.Builder(this)
-                .addApi(Wearable.API)
-                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                    @Override
-                    public void onConnected(Bundle bundle) {
-                        Log.d(LOG_TAG, "setUpForWear() onConnected");
-                    }
 
-                    @Override
-                    public void onConnectionSuspended(int i) {
-                        Log.d(LOG_TAG, "setUpForWear() onConnectionSuspended");
-                    }
-                })
-                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(ConnectionResult connectionResult) {
-                        Log.d(LOG_TAG, "setUpForWear() onConnectionFailed");
-                    }
-                })
-                .build();
-        mGoogleApiclient.connect();
 
     }
 
