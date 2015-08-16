@@ -9,8 +9,18 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
+/**
+ * @see http://www.programmableweb.com/news/how-to-develop-android-wear-application/how-to/2014/10/17
+ */
 public class MainActivity extends Activity {
 
     //private TextView mTextView;
@@ -19,6 +29,13 @@ public class MainActivity extends Activity {
     GoogleApiClient mGoogleApiclient;
     private static final String LOG_TAG = "MainActivity";
 
+
+    public static String REQUEST_PATH = null;
+    public static final String REQUEST_PATH_GET_CURRENT_WEATHER_DETAILS = "/get-current-weather-details";
+    public static final String REQUEST_PATH_RECEIVE_CURRENT_WEATHER_DETAILS = "/receive-current-weather-details";
+    public static final String REQUEST_KEY = "REQUEST_TYPE";
+    public static final int REQUEST_GET_CURRENT_WEATHER = 1;
+    public static final int REQUEST_RECIEVE_CURRENT_WEATHER = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,28 +55,98 @@ public class MainActivity extends Activity {
         });
     }
 
-    private void getDataFromPhone(){
+    private void initGoogleApiClient(){
+        final String logStr = "initGoogleApiClient() ";
         mGoogleApiclient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                     @Override
                     public void onConnected(Bundle bundle) {
-                        Log.d(LOG_TAG, "getDataFromPhone() onConnected");
+                        Log.d(LOG_TAG, logStr+" onConnected");
+                        sendGetCurrentWeatherDetailsRequestThruMessages(REQUEST_PATH_GET_CURRENT_WEATHER_DETAILS, ""+REQUEST_GET_CURRENT_WEATHER);
                     }
 
                     @Override
                     public void onConnectionSuspended(int i) {
-                        Log.d(LOG_TAG, "getDataFromPhone() onConnectionSuspended");
+                        Log.d(LOG_TAG, logStr+" onConnectionSuspended");
                     }
                 })
                 .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
                     @Override
                     public void onConnectionFailed(ConnectionResult connectionResult) {
-                        Log.d(LOG_TAG, "getDataFromPhone() onConnectionFailed");
+                        Log.d(LOG_TAG, logStr+" onConnectionFailed");
                     }
                 })
                 .build();
         mGoogleApiclient.connect();
     }
 
+    /**
+     * This method will create a dataitem to send to the mobile app, this will trigger the app to send
+     * back data needed by the wear.
+     * This uses DataItems.
+     * https://youtu.be/OopjNYlqTQ4
+     */
+    private void sendGetCurrentWeatherDetailsRequestThruDataItems(){
+        final String logStr = "sendGetCurrentWeatherDetailsRequestThruDataItems() ";
+        PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(REQUEST_PATH_GET_CURRENT_WEATHER_DETAILS);
+        putDataMapRequest.getDataMap().putInt(REQUEST_KEY, REQUEST_GET_CURRENT_WEATHER);
+
+        PutDataRequest putDataRequest = putDataMapRequest.asPutDataRequest();
+        Wearable.DataApi.putDataItem(mGoogleApiclient, putDataRequest)
+                .setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+                    @Override
+                    public void onResult(DataApi.DataItemResult dataItemResult) {
+                        if (!dataItemResult.getStatus().isSuccess()) {
+                            //FAIL
+                            Log.d(LOG_TAG, logStr + " onResult() faild delivering data item");
+                        } else {
+                            //SUCCESS
+                            Log.d(LOG_TAG, logStr + " onResult() success delivering data item");
+                        }
+                    }
+                });
+    }
+
+    /**
+     * @see https://www.binpress.com/tutorial/a-guide-to-the-android-wear-message-api/152
+     *
+     * @param path String unique path for reference of the message
+     * @param text String the String data that will be sent
+     */
+    private void sendGetCurrentWeatherDetailsRequestThruMessages(final String path,final String text){
+        //1. first use the Node API to get a list of nodes connected to the device.
+        //2. we send a message to each node using MessageAPI with references to the GoogleApiClient, nodeId
+        //the path used to determine the type of message being sent, and the message payload as a byte array.
+
+        new Thread( new Runnable() {
+            @Override
+            public void run() {
+                NodeApi.GetConnectedNodesResult nodes = Wearable.NodeApi.getConnectedNodes( mGoogleApiclient ).await();
+                for(Node node : nodes.getNodes()) {
+                    MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(
+                            mGoogleApiclient, node.getId(), path, text.getBytes() ).await();
+                    Log.d(LOG_TAG, "run() result="+result);
+                }
+            }
+        }).start();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiclient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        mGoogleApiclient.disconnect();
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mGoogleApiclient.disconnect();
+    }
 }

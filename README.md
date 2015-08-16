@@ -52,6 +52,8 @@ the License.
 
 Notes:
 -------
+TUTORIAL1: http://www.programmableweb.com/news/how-to-develop-android-wear-application/how-to/2014/10/17
+TUTORIAL2: https://www.binpress.com/tutorial/a-guide-to-the-android-wear-message-api/152
 
 Android automatically pushes device notifications to Android wear.
 good starting point: https://www.udacity.com/course/viewer#!/c-ud875-nd/l-4613198543/m-4579030547
