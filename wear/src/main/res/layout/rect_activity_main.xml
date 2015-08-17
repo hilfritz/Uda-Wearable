@@ -5,6 +5,7 @@
     tools:context=".MainActivity" tools:deviceIds="wear_square"
     android:background="@color/skyblue"
     >
-
+    <include layout="@layout/common_activity_main"
+        />
 
 </LinearLayout>

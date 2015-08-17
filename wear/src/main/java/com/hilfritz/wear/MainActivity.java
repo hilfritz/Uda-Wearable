@@ -58,6 +58,7 @@ public class MainActivity extends Activity {
             }
         });
         updateReceiver =  new UpdateWearReceiver();
+        initGoogleApiClient();
     }
 
     private void initGoogleApiClient(){
@@ -154,20 +155,22 @@ public class MainActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        mGoogleApiclient.connect();
+        if (mGoogleApiclient!=null)
+            mGoogleApiclient.connect();
 
     }
 
     @Override
     protected void onStop() {
-        mGoogleApiclient.disconnect();
+        if (mGoogleApiclient!=null)
+            mGoogleApiclient.disconnect();
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mGoogleApiclient.disconnect();
+        //mGoogleApiclient.disconnect();
     }
 
     /**
