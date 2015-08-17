@@ -141,3 +141,6 @@ http://stackoverflow.com/questions/25413162/sending-data-to-android-wear-device
 
 ANDROID WeAR APPS END
 -----------------------------------
+
+GOOGLE PLAY SERVICES SETUP
+https://developers.google.com/android/guides/setup

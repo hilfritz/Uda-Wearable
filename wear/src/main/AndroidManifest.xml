@@ -27,12 +27,12 @@
                 <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
             </intent-filter>
         </service>
-       <!-- <receiver android:name=".MainActivity.UpdateWearReceiver" >
+        <receiver android:name=".MainActivity$UpdateWearReceiver" >
             <intent-filter>
                 <action android:name="com.hilfritz.wear.UpdateUiBroadcast" >
                 </action>
             </intent-filter>
-        </receiver>-->
+        </receiver>
     </application>
 
 </manifest>
