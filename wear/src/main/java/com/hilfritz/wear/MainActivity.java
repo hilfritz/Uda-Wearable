@@ -1,6 +1,10 @@
 package com.hilfritz.wear;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
@@ -28,7 +32,7 @@ public class MainActivity extends Activity {
     ImageView imageStatus;
     GoogleApiClient mGoogleApiclient;
     private static final String LOG_TAG = "MainActivity";
-
+    UpdateWearReceiver updateReceiver;
 
     public static String REQUEST_PATH = null;
     public static final String REQUEST_PATH_GET_CURRENT_WEATHER_DETAILS = "/get-current-weather-details";
@@ -53,6 +57,7 @@ public class MainActivity extends Activity {
                 low = (TextView)stub.findViewById(R.id.low);
             }
         });
+        updateReceiver =  new UpdateWearReceiver();
     }
 
     private void initGoogleApiClient(){
@@ -79,6 +84,20 @@ public class MainActivity extends Activity {
                 })
                 .build();
         mGoogleApiclient.connect();
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(updateReceiver,
+                new IntentFilter("com.hilfritz.wear.UpdateUiBroadcast"));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(updateReceiver);
     }
 
     /**
@@ -136,6 +155,7 @@ public class MainActivity extends Activity {
     protected void onStart() {
         super.onStart();
         mGoogleApiclient.connect();
+
     }
 
     @Override
@@ -148,5 +168,23 @@ public class MainActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         mGoogleApiclient.disconnect();
+    }
+
+    /**
+     * com.hilfritz.wear.UpdateUiBroadcast
+     */
+    public class UpdateWearReceiver extends BroadcastReceiver {
+        public UpdateWearReceiver() {
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String maxTempStr = intent.getStringExtra(WearListenerService.KEY_TEMP_MAX);
+            String minTempStr = intent.getStringExtra(WearListenerService.KEY_TEMP_MIN);
+            String drawableStr = intent.getStringExtra(WearListenerService.KEY_DRAWABLE_ASSET);
+            Log.d(LOG_TAG, "onReceive() maxTempStr:"+maxTempStr+" minTempStr:"+minTempStr+" drawableStr:"+drawableStr);
+            high.setText(maxTempStr);
+            low.setText(minTempStr);
+        }
     }
 }

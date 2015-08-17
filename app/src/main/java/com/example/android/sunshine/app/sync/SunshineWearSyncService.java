@@ -60,9 +60,6 @@ public class SunshineWearSyncService extends WearableListenerService implements 
             //1. RETRIVE CURRENT WEATHER DATA
             //2. SEND WEATHER DATA
             getAndSendCurrentWeatherData();
-
-            //initGoogleApiClient();
-
         } else {
             super.onMessageReceived( messageEvent );
         }
@@ -160,8 +157,6 @@ public class SunshineWearSyncService extends WearableListenerService implements 
                         mGoogleApiclient, node.getId(), REQUEST_PATH_GET_CURRENT_WEATHER_DETAILS, data.getBytes() ).await();
                 Log.d(LOG_TAG, "onConnected() result:="+result);
             }
-
-
         }
         bundle = null;
     }
