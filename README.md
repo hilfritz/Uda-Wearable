@@ -144,3 +144,8 @@ ANDROID WeAR APPS END
 
 GOOGLE PLAY SERVICES SETUP
 https://developers.google.com/android/guides/setup
+
+
+EMULATED ANDROID PHONE AND EMULATED ANDROID WEAR
+http://stackoverflow.com/questions/25205888/pairing-android-and-wear-emulators
+https://developer.android.com/training/wearables/apps/creating.html

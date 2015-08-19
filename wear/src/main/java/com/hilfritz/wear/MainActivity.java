@@ -80,7 +80,7 @@ public class MainActivity extends Activity {
                 .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
                     @Override
                     public void onConnectionFailed(ConnectionResult connectionResult) {
-                        Log.d(LOG_TAG, logStr+" onConnectionFailed");
+                        Log.d(LOG_TAG, logStr+" onConnectionFailed "+connectionResult.toString());
                     }
                 })
                 .build();

@@ -53,8 +53,9 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
     /**
      * Substitute you own project number here. This project number comes
      * from the Google Developers Console.
+     * https://console.developers.google.com/
      */
-    static final String PROJECT_NUMBER = "Your Project Number";
+    static final String PROJECT_NUMBER = "588902945256";
 
     private boolean mTwoPane;
     private String mLocation;
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
         if (checkPlayServices()) {
             mGcm = GoogleCloudMessaging.getInstance(this);
             String regId = getRegistrationId(this);
-
+            Log.i(LOG_TAG, "onCreate() playservices present");
             if (PROJECT_NUMBER.equals("Your Project Number")) {
                 new AlertDialog.Builder(this)
                 .setTitle("Needs Project Number")
@@ -119,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
                 .create().show();
             } else if (regId.isEmpty()) {
                 registerInBackground(this);
+                Log.i(LOG_TAG, "onCreate() registerInBackground() called");
             }
         } else {
             Log.i(LOG_TAG, "No valid Google Play Services APK. Weather alerts will be disabled.");
