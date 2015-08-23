@@ -156,7 +156,14 @@ public class SunshineWearSyncService extends WearableListenerService implements 
                 MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(
                         mGoogleApiclient, node.getId(), REQUEST_PATH_GET_CURRENT_WEATHER_DETAILS, data.getBytes() ).await();
                 Log.d(LOG_TAG, "onConnected() result:="+result);
+                if (result.getStatus().isSuccess()){
+                    Log.d(LOG_TAG, "onConnected() sent successfully");
+                }else{
+                    Log.d(LOG_TAG, "onConnected() error in sending "+result.getStatus().getStatusMessage());
+                }
             }
+        }else{
+            Log.d(LOG_TAG, "onConnected() bundle is null");
         }
         bundle = null;
     }

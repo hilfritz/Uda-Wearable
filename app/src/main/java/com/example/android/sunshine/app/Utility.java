@@ -24,8 +24,6 @@ import android.text.format.Time;
 
 import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
 
-import org.joda.time.DateTime;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;

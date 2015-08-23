@@ -51,12 +51,14 @@ public class MainActivity extends Activity {
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
-                //mTextView = (TextView) stub.findViewById(R.id.text);
+                Log.d(LOG_TAG, "onCreate() onLayoutInflated");
                 imageStatus = (ImageView)stub.findViewById(R.id.imageStatus);
                 time = (TextView)stub.findViewById(R.id.time);
                 date = (TextView)stub.findViewById(R.id.date);
                 high = (TextView)stub.findViewById(R.id.high);
                 low = (TextView)stub.findViewById(R.id.low);
+                time.setText("hi");
+                Log.d(LOG_TAG, "onCreate() onLayoutInflated");
             }
         });
         updateReceiver =  new UpdateWearReceiver();
@@ -66,18 +68,10 @@ public class MainActivity extends Activity {
 
     private void updateTimeAndDate(){
         long currentTimeInMillis = System.currentTimeMillis();
-        time.setText(Utility.getTimeForDisplay(new DateTime(currentTimeInMillis)));
-        date.setText(Utility.getDayMonthDateYear(this, new DateTime(currentTimeInMillis)));
-        updateTemperature(0, 0, 200);
-        /*
-        Log.d(LOG_TAG,"updateTimeAndDate() "+currentTimeInMillis+" Utility.");
-        Log.d(LOG_TAG,"updateTimeAndDate() 30deg Utility.formatTemperature:"+Utility.formatTemperature(this, 30.0));
-        Log.d(LOG_TAG,"updateTimeAndDate() "+currentTimeInMillis+" Utility.formatDate:"+Utility.formatDate(currentTimeInMillis));
-        Log.d(LOG_TAG,"updateTimeAndDate() "+currentTimeInMillis+" Utility.getFullFriendlyDayString:"+Utility.getFullFriendlyDayString(this, currentTimeInMillis));
-        Log.d(LOG_TAG,"updateTimeAndDate() "+currentTimeInMillis+" Utility.getFormattedMonthDay:"+Utility.getFormattedMonthDay(this, currentTimeInMillis)); //needs year
-        Log.d(LOG_TAG,"updateTimeAndDate() "+currentTimeInMillis+" Utility.getTimeForDisplay:"+Utility.getTimeForDisplay(new DateTime(currentTimeInMillis)));
-        Log.d(LOG_TAG,"updateTimeAndDate() "+currentTimeInMillis+" Utility.getDayMonthDateYear:"+Utility.getDayMonthDateYear(this, new DateTime(currentTimeInMillis))); //this one
-        */
+        //time.setText(Utility.getTimeForDisplay(new DateTime(currentTimeInMillis)));
+        //date.setText(Utility.getDayMonthDateYear(this, new DateTime(currentTimeInMillis)));
+        //updateTemperature(0, 0, 200);
+        time.setText("times two");
 
     }
 
@@ -169,8 +163,14 @@ public class MainActivity extends Activity {
                 for(Node node : nodes.getNodes()) {
                     MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(
                             mGoogleApiclient, node.getId(), path, text.getBytes() ).await();
+                    Log.d(LOG_TAG, "run() result.getStatus().getStatusMessage():"+result.getStatus().getStatusMessage()+" "+result.getStatus().getResolution().toString());
                     Log.d(LOG_TAG, "run() nodeId:"+node.getId()+" path:"+path+" text:"+text.getBytes());
                     Log.d(LOG_TAG, "run() result status:"+result.getStatus()+" requestId:"+result.getRequestId()+" toString:"+result.toString());
+                    if (result.getStatus().isSuccess()){
+                        Log.d(LOG_TAG, "run() success sending message ");
+                    }else{
+                        Log.d(LOG_TAG, "run() error sending message");
+                    }
                 }
             }
         }).start();
@@ -179,14 +179,17 @@ public class MainActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (mGoogleApiclient!=null)
+        Log.d(LOG_TAG, "onStart()");
+        if (mGoogleApiclient!=null){
             mGoogleApiclient.connect();
+            Log.d(LOG_TAG, "onStart() connecting");
+        }
 
     }
 
     @Override
     protected void onStop() {
-        if (mGoogleApiclient!=null)
+        if (mGoogleApiclient!=null && mGoogleApiclient.isConnected()==true)
             mGoogleApiclient.disconnect();
         super.onStop();
     }
