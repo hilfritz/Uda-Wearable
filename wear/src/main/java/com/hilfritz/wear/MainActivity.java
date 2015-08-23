@@ -22,6 +22,8 @@ import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
+import org.joda.time.DateTime;
+
 /**
  * @see http://www.programmableweb.com/news/how-to-develop-android-wear-application/how-to/2014/10/17
  */
@@ -58,8 +60,28 @@ public class MainActivity extends Activity {
             }
         });
         updateReceiver =  new UpdateWearReceiver();
+        //updateTimeAndDate();
         initGoogleApiClient();
     }
+
+    private void updateTimeAndDate(){
+        long currentTimeInMillis = System.currentTimeMillis();
+        time.setText(Utility.getTimeForDisplay(new DateTime(currentTimeInMillis)));
+        date.setText(Utility.getDayMonthDateYear(this, new DateTime(currentTimeInMillis)));
+        updateTemperature(0, 0, 200);
+        /*
+        Log.d(LOG_TAG,"updateTimeAndDate() "+currentTimeInMillis+" Utility.");
+        Log.d(LOG_TAG,"updateTimeAndDate() 30deg Utility.formatTemperature:"+Utility.formatTemperature(this, 30.0));
+        Log.d(LOG_TAG,"updateTimeAndDate() "+currentTimeInMillis+" Utility.formatDate:"+Utility.formatDate(currentTimeInMillis));
+        Log.d(LOG_TAG,"updateTimeAndDate() "+currentTimeInMillis+" Utility.getFullFriendlyDayString:"+Utility.getFullFriendlyDayString(this, currentTimeInMillis));
+        Log.d(LOG_TAG,"updateTimeAndDate() "+currentTimeInMillis+" Utility.getFormattedMonthDay:"+Utility.getFormattedMonthDay(this, currentTimeInMillis)); //needs year
+        Log.d(LOG_TAG,"updateTimeAndDate() "+currentTimeInMillis+" Utility.getTimeForDisplay:"+Utility.getTimeForDisplay(new DateTime(currentTimeInMillis)));
+        Log.d(LOG_TAG,"updateTimeAndDate() "+currentTimeInMillis+" Utility.getDayMonthDateYear:"+Utility.getDayMonthDateYear(this, new DateTime(currentTimeInMillis))); //this one
+        */
+
+    }
+
+
 
     private void initGoogleApiClient(){
         final String logStr = "initGoogleApiClient() ";
@@ -91,6 +113,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        updateTimeAndDate();
         registerReceiver(updateReceiver,
                 new IntentFilter("com.hilfritz.wear.UpdateUiBroadcast"));
     }
@@ -186,9 +209,18 @@ public class MainActivity extends Activity {
             String maxTempStr = intent.getStringExtra(WearListenerService.KEY_TEMP_MAX);
             String minTempStr = intent.getStringExtra(WearListenerService.KEY_TEMP_MIN);
             String drawableStr = intent.getStringExtra(WearListenerService.KEY_DRAWABLE_ASSET);
-            Log.d(LOG_TAG, "onReceive() maxTempStr:"+maxTempStr+" minTempStr:"+minTempStr+" drawableStr:"+drawableStr);
-            high.setText(maxTempStr);
-            low.setText(minTempStr);
+            Log.d(LOG_TAG, "onReceive() maxTempStr:" + maxTempStr + " minTempStr:" + minTempStr + " drawableStr:" + drawableStr);
+
+            double maxTemp = Double.valueOf(maxTempStr);
+            double lowTemp = Double.valueOf(minTempStr);
+            int drawableId = Integer.valueOf(drawableStr);
+            updateTemperature(maxTemp, lowTemp, drawableId);
         }
+    }
+
+    public void updateTemperature(double max, double min, int drawableId){
+        high.setText(Utility.formatTemperature(MainActivity.this,max));
+        low.setText(Utility.formatTemperature(MainActivity.this,min));
+        imageStatus.setBackgroundResource(Utility.getArtResourceForWeatherCondition(drawableId));
     }
 }

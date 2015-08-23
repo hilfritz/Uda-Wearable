@@ -22,6 +22,8 @@ import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
 
+import org.joda.time.DateTime;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -550,6 +552,17 @@ public class Utility {
         return activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
     }
+    static public String getTimeForDisplay(DateTime dateTime){
+        return dateTime.getHourOfDay()+":"+dateTime.getMinuteOfHour();
+    }
+    static public String getDayMonthDateYear(Context context,DateTime dateTime){
+        String dayName = dateTime.dayOfWeek().getAsText();
+        String monthName = dateTime.monthOfYear().getAsText();
+        int date = dateTime.getDayOfMonth();
+        int year = dateTime.getYear();
+        dayName = dayName.substring(0, 2);
+        return context.getString(R.string.datetime_display_1, dayName, monthName, date,year);
 
+    }
 
 }

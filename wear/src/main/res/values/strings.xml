@@ -99,4 +99,7 @@
     <string name="pref_units_key" translatable="false">units</string>
     <!-- Key name for storing location in SharedPreferences [CHAR LIMIT=NONE] -->
     <string name="pref_location_key" translatable="false">location</string>
+
+
+    <string name="datetime_display_1" translatable="false"><xliff:g id="dayName">%s</xliff:g>, <xliff:g id="monthName">%s</xliff:g> <xliff:g id="date">%d</xliff:g> <xliff:g id="year">%d</xliff:g></string>
 </resources>
