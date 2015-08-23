@@ -55,7 +55,7 @@ public class SunshineWearSyncService extends WearableListenerService implements 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
         super.onMessageReceived(messageEvent);
-
+        Log.d(LOG_TAG, "onMessageReceived()");
         if( messageEvent.getPath().equalsIgnoreCase(REQUEST_PATH_GET_CURRENT_WEATHER_DETAILS) ) {
             //1. RETRIVE CURRENT WEATHER DATA
             //2. SEND WEATHER DATA

@@ -146,7 +146,8 @@ public class MainActivity extends Activity {
                 for(Node node : nodes.getNodes()) {
                     MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(
                             mGoogleApiclient, node.getId(), path, text.getBytes() ).await();
-                    Log.d(LOG_TAG, "run() result="+result);
+                    Log.d(LOG_TAG, "run() nodeId:"+node.getId()+" path:"+path+" text:"+text.getBytes());
+                    Log.d(LOG_TAG, "run() result status:"+result.getStatus()+" requestId:"+result.getRequestId()+" toString:"+result.toString());
                 }
             }
         }).start();
