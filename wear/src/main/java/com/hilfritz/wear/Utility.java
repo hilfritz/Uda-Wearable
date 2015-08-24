@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.sunshine.app;
+package com.hilfritz.wear;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -22,7 +22,7 @@ import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
 
-import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
+import org.joda.time.DateTime;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -552,29 +552,17 @@ public class Utility {
         return activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
     }
-
-    /**
-     *
-     * @param c Context used to get the SharedPreferences
-     * @return the location status integer type
-     */
-    @SuppressWarnings("ResourceType")
-    static public @SunshineSyncAdapter.LocationStatus
-    int getLocationStatus(Context c){
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
-        return sp.getInt(c.getString(R.string.pref_location_status_key), SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN);
+    static public String getTimeForDisplay(DateTime dateTime){
+        return dateTime.getHourOfDay()+":"+dateTime.getMinuteOfHour();
     }
+    static public String getDayMonthDateYear(Context context,DateTime dateTime){
+        String dayName = dateTime.dayOfWeek().getAsText();
+        String monthName = dateTime.monthOfYear().getAsText();
+        int date = dateTime.getDayOfMonth();
+        int year = dateTime.getYear();
+        dayName = dayName.substring(0, 2);
+        return context.getString(R.string.datetime_display_1, dayName, monthName, date,year);
 
-    /**
-     * Resets the location status.  (Sets it to SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN)
-     * @param c Context used to get the SharedPreferences
-     */
-    static public void resetLocationStatus(Context c){
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
-        SharedPreferences.Editor spe = sp.edit();
-        spe.putInt(c.getString(R.string.pref_location_status_key), SunshineSyncAdapter.LOCATION_STATUS_UNKNOWN);
-        spe.apply();
     }
-
 
 }

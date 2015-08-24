@@ -55,7 +55,7 @@ public class SunshineWearSyncService extends WearableListenerService implements 
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
         super.onMessageReceived(messageEvent);
-
+        Log.d(LOG_TAG, "onMessageReceived()");
         if( messageEvent.getPath().equalsIgnoreCase(REQUEST_PATH_GET_CURRENT_WEATHER_DETAILS) ) {
             //1. RETRIVE CURRENT WEATHER DATA
             //2. SEND WEATHER DATA
@@ -156,7 +156,14 @@ public class SunshineWearSyncService extends WearableListenerService implements 
                 MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(
                         mGoogleApiclient, node.getId(), REQUEST_PATH_GET_CURRENT_WEATHER_DETAILS, data.getBytes() ).await();
                 Log.d(LOG_TAG, "onConnected() result:="+result);
+                if (result.getStatus().isSuccess()){
+                    Log.d(LOG_TAG, "onConnected() sent successfully");
+                }else{
+                    Log.d(LOG_TAG, "onConnected() error in sending "+result.getStatus().getStatusMessage());
+                }
             }
+        }else{
+            Log.d(LOG_TAG, "onConnected() bundle is null");
         }
         bundle = null;
     }

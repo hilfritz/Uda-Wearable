@@ -22,6 +22,8 @@ import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
+import org.joda.time.DateTime;
+
 /**
  * @see http://www.programmableweb.com/news/how-to-develop-android-wear-application/how-to/2014/10/17
  */
@@ -49,17 +51,31 @@ public class MainActivity extends Activity {
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
-                //mTextView = (TextView) stub.findViewById(R.id.text);
+                Log.d(LOG_TAG, "onCreate() onLayoutInflated");
                 imageStatus = (ImageView)stub.findViewById(R.id.imageStatus);
                 time = (TextView)stub.findViewById(R.id.time);
                 date = (TextView)stub.findViewById(R.id.date);
                 high = (TextView)stub.findViewById(R.id.high);
                 low = (TextView)stub.findViewById(R.id.low);
+                time.setText("hi");
+                Log.d(LOG_TAG, "onCreate() onLayoutInflated");
             }
         });
         updateReceiver =  new UpdateWearReceiver();
+        //updateTimeAndDate();
         initGoogleApiClient();
     }
+
+    private void updateTimeAndDate(){
+        long currentTimeInMillis = System.currentTimeMillis();
+        //time.setText(Utility.getTimeForDisplay(new DateTime(currentTimeInMillis)));
+        //date.setText(Utility.getDayMonthDateYear(this, new DateTime(currentTimeInMillis)));
+        //updateTemperature(0, 0, 200);
+        time.setText("times two");
+
+    }
+
+
 
     private void initGoogleApiClient(){
         final String logStr = "initGoogleApiClient() ";
@@ -91,6 +107,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        updateTimeAndDate();
         registerReceiver(updateReceiver,
                 new IntentFilter("com.hilfritz.wear.UpdateUiBroadcast"));
     }
@@ -146,7 +163,14 @@ public class MainActivity extends Activity {
                 for(Node node : nodes.getNodes()) {
                     MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(
                             mGoogleApiclient, node.getId(), path, text.getBytes() ).await();
-                    Log.d(LOG_TAG, "run() result="+result);
+                    Log.d(LOG_TAG, "run() result.getStatus().getStatusMessage():"+result.getStatus().getStatusMessage()+" "+result.getStatus().getResolution().toString());
+                    Log.d(LOG_TAG, "run() nodeId:"+node.getId()+" path:"+path+" text:"+text.getBytes());
+                    Log.d(LOG_TAG, "run() result status:"+result.getStatus()+" requestId:"+result.getRequestId()+" toString:"+result.toString());
+                    if (result.getStatus().isSuccess()){
+                        Log.d(LOG_TAG, "run() success sending message ");
+                    }else{
+                        Log.d(LOG_TAG, "run() error sending message");
+                    }
                 }
             }
         }).start();
@@ -155,14 +179,17 @@ public class MainActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (mGoogleApiclient!=null)
+        Log.d(LOG_TAG, "onStart()");
+        if (mGoogleApiclient!=null){
             mGoogleApiclient.connect();
+            Log.d(LOG_TAG, "onStart() connecting");
+        }
 
     }
 
     @Override
     protected void onStop() {
-        if (mGoogleApiclient!=null)
+        if (mGoogleApiclient!=null && mGoogleApiclient.isConnected()==true)
             mGoogleApiclient.disconnect();
         super.onStop();
     }
@@ -185,9 +212,18 @@ public class MainActivity extends Activity {
             String maxTempStr = intent.getStringExtra(WearListenerService.KEY_TEMP_MAX);
             String minTempStr = intent.getStringExtra(WearListenerService.KEY_TEMP_MIN);
             String drawableStr = intent.getStringExtra(WearListenerService.KEY_DRAWABLE_ASSET);
-            Log.d(LOG_TAG, "onReceive() maxTempStr:"+maxTempStr+" minTempStr:"+minTempStr+" drawableStr:"+drawableStr);
-            high.setText(maxTempStr);
-            low.setText(minTempStr);
+            Log.d(LOG_TAG, "onReceive() maxTempStr:" + maxTempStr + " minTempStr:" + minTempStr + " drawableStr:" + drawableStr);
+
+            double maxTemp = Double.valueOf(maxTempStr);
+            double lowTemp = Double.valueOf(minTempStr);
+            int drawableId = Integer.valueOf(drawableStr);
+            updateTemperature(maxTemp, lowTemp, drawableId);
         }
+    }
+
+    public void updateTemperature(double max, double min, int drawableId){
+        high.setText(Utility.formatTemperature(MainActivity.this,max));
+        low.setText(Utility.formatTemperature(MainActivity.this,min));
+        imageStatus.setBackgroundResource(Utility.getArtResourceForWeatherCondition(drawableId));
     }
 }
