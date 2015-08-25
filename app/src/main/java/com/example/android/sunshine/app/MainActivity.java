@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
      * from the Google Developers Console.
      * https://console.developers.google.com/
      */
-    static final String PROJECT_NUMBER = "588902945256";
+    static final String PROJECT_NUMBER = "";
 
     private boolean mTwoPane;
     private String mLocation;
