@@ -1,4 +1,4 @@
-package com.hilfritz.wear;
+package com.example.android.sunshine.app;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -67,11 +67,29 @@ public class MainActivity extends Activity {
     }
 
     private void updateTimeAndDate(){
+        final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
+        stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
+            @Override
+            public void onLayoutInflated(WatchViewStub stub) {
+                Log.d(LOG_TAG, "updateTimeAndDate() onLayoutInflated");
+                long currentTimeInMillis = System.currentTimeMillis();
+                imageStatus = (ImageView)stub.findViewById(R.id.imageStatus);
+                time = (TextView)stub.findViewById(R.id.time);
+                date = (TextView)stub.findViewById(R.id.date);
+                high = (TextView)stub.findViewById(R.id.high);
+                low = (TextView)stub.findViewById(R.id.low);
+                time.setText("hi");
+                time.setText(Utility.getTimeForDisplay(new DateTime(currentTimeInMillis)));
+                date.setText(Utility.getDayMonthDateYear(MainActivity.this, new DateTime(currentTimeInMillis)));
+                Log.d(LOG_TAG, "updateTimeAndDate() onLayoutInflated");
+            }
+        });
+
         long currentTimeInMillis = System.currentTimeMillis();
         //time.setText(Utility.getTimeForDisplay(new DateTime(currentTimeInMillis)));
         //date.setText(Utility.getDayMonthDateYear(this, new DateTime(currentTimeInMillis)));
         //updateTemperature(0, 0, 200);
-        time.setText("times two");
+        //time.setText("times two");
 
     }
 

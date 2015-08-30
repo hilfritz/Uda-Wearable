@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.hilfritz.wear" >
+    package="com.example.android.sunshine.app" >
 
     <uses-feature android:name="android.hardware.type.watch" />
     <!-- This permission is necessary in order for Sunshine to perform network access. -->
@@ -45,7 +45,7 @@
                 <action android:name="com.google.android.gms.wearable.BIND_LISTENER" />
             </intent-filter>
         </service>
-        <receiver android:name=".MainActivity$UpdateWearReceiver" >
+        <receiver android:name="com.example.android.sunshine.app.MainActivity$UpdateWearReceiver" >
             <intent-filter>
                 <action android:name="com.hilfritz.wear.UpdateUiBroadcast" >
                 </action>

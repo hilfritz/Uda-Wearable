@@ -6,21 +6,28 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "com.hilfritz.wear"
+        //applicationId "com.hilfritz.wear"
+        applicationId "com.example.android.sunshine.app"
         minSdkVersion 20
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
     }
     buildTypes {
+        debug{
+
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    productFlavors{
+
+    }
 }
 
-dependencies {
+/*dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.google.android.support:wearable:1.2.0'
     compile 'joda-time:joda-time:2.3'
@@ -28,4 +35,11 @@ dependencies {
     compile 'com.google.android.gms:play-services-wearable:7.5.0'
     compile 'com.google.android.gms:play-services-gcm:7.5.0'
 
+}*/
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.google.android.support:wearable:1.2.0'
+    compile 'com.google.android.gms:play-services-wearable:7.8.0'
+    compile 'com.github.bumptech.glide:glide:3.5.2'
+    compile 'joda-time:joda-time:2.3'
 }

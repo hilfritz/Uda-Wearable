@@ -1,12 +1,10 @@
-package com.hilfritz.wear;
+package com.example.android.sunshine.app;
 
 import android.content.Intent;
 import android.util.Log;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.MessageEvent;
-import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 
 public class WearListenerService extends WearableListenerService {
