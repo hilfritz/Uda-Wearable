@@ -307,6 +307,7 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
     private void registerInBackground(final Context context) {
         new AsyncTask<Void, Void, Void>() {
             int result = 0;
+            String regId = "";
             @Override
             protected Void doInBackground(Void... params) {
                 String msg = "";
@@ -314,10 +315,10 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
                     if (mGcm == null) {
                         mGcm = GoogleCloudMessaging.getInstance(context);
                     }
-                    String regId = mGcm.register(PROJECT_NUMBER);
+                    regId = mGcm.register(PROJECT_NUMBER);
                     msg = "Device registered, registration ID=" + regId;
-                    Log.d(LOG_TAG,"registerInBackground() Device registered, registration ID=" + regId);
-                    Toast.makeText(MainActivity.this, "Device registered, registration ID=" + regId, Toast.LENGTH_SHORT).show();
+                    Log.d(LOG_TAG, "registerInBackground() Device registered, registration ID=" + regId);
+
                     // You should send the registration ID to your server over HTTP,
                     // so it can use GCM/HTTP or CCS to send messages to your app.
                     // The request to your server should be authenticated if your app
@@ -349,6 +350,7 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
                         showRegisterGCMAgain();
                         break;
                     case 1:
+                        Toast.makeText(MainActivity.this, "Device registered, registration ID=" + regId, Toast.LENGTH_SHORT).show();
                         break;
                 }
             }
