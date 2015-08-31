@@ -17,6 +17,7 @@ package com.example.android.sunshine.app;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -33,6 +34,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.android.sunshine.app.data.WeatherContract;
 import com.example.android.sunshine.app.sync.SunshineSyncAdapter;
@@ -55,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
      * from the Google Developers Console.
      * https://console.developers.google.com/
      */
-    static final String PROJECT_NUMBER = "";
+    static final String PROJECT_NUMBER = "588902945256";
 
     private boolean mTwoPane;
     private String mLocation;
@@ -121,12 +123,33 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
             } else if (regId.isEmpty()) {
                 registerInBackground(this);
                 Log.i(LOG_TAG, "onCreate() registerInBackground() called");
+            }else{
+                registerInBackground(this);
             }
         } else {
+            Toast.makeText(MainActivity.this, "PlayServices is not available. It is necessary to have this for full funcitonality of the app.", Toast.LENGTH_SHORT).show();
             Log.i(LOG_TAG, "No valid Google Play Services APK. Weather alerts will be disabled.");
             // Store regID as null
             storeRegistrationId(this, null);
         }
+    }
+
+    private void showRegisterGCMAgain(){
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Warning")
+                .setMessage("GCM registration failed, this is needed for app and wear syncronization.")
+                .setPositiveButton("Try again", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        registerInBackground(MainActivity.this);
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     @Override
@@ -234,7 +257,8 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
         final SharedPreferences prefs = getGCMPreferences(context);
         String registrationId = prefs.getString(PROPERTY_REG_ID, "");
         if (registrationId.isEmpty()) {
-            Log.i(LOG_TAG, "GCM Registration not found.");
+            Log.i(LOG_TAG, "getRegistrationId() GCM Registration not found.");
+            Toast.makeText(MainActivity.this, "GCM Registration not found.", Toast.LENGTH_SHORT).show();
             return "";
         }
 
@@ -244,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
         int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
         int currentVersion = getAppVersion(context);
         if (registeredVersion != currentVersion) {
-            Log.i(LOG_TAG, "App version changed.");
+            Log.i(LOG_TAG, "getRegistrationId() App version changed.");
             return "";
         }
         return registrationId;
@@ -282,6 +306,7 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
      */
     private void registerInBackground(final Context context) {
         new AsyncTask<Void, Void, Void>() {
+            int result = 0;
             @Override
             protected Void doInBackground(Void... params) {
                 String msg = "";
@@ -291,7 +316,8 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
                     }
                     String regId = mGcm.register(PROJECT_NUMBER);
                     msg = "Device registered, registration ID=" + regId;
-
+                    Log.d(LOG_TAG,"registerInBackground() Device registered, registration ID=" + regId);
+                    Toast.makeText(MainActivity.this, "Device registered, registration ID=" + regId, Toast.LENGTH_SHORT).show();
                     // You should send the registration ID to your server over HTTP,
                     // so it can use GCM/HTTP or CCS to send messages to your app.
                     // The request to your server should be authenticated if your app
@@ -303,13 +329,28 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
 
                     // Persist the registration ID - no need to register again.
                     storeRegistrationId(context, regId);
+                    result = 1;
                 } catch (IOException ex) {
                     msg = "Error :" + ex.getMessage();
                     // TODO: If there is an error, don't just keep trying to register.
                     // Require the user to click a button again, or perform
                     // exponential back-off.
+
+                    Log.d(LOG_TAG,"registerInBackground() GCM registration fail."+msg );
                 }
                 return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                switch (result){
+                    case 0:
+                        showRegisterGCMAgain();
+                        break;
+                    case 1:
+                        break;
+                }
             }
         }.execute(null, null, null);
     }
@@ -324,7 +365,7 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
     private void storeRegistrationId(Context context, String regId) {
         final SharedPreferences prefs = getGCMPreferences(context);
         int appVersion = getAppVersion(context);
-        Log.i(LOG_TAG, "Saving regId on app version " + appVersion);
+        Log.i(LOG_TAG, "storeRegistrationId() Saving regId on app version " + appVersion);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(PROPERTY_REG_ID, regId);
         editor.putInt(PROPERTY_APP_VERSION, appVersion);
