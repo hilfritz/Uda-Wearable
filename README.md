@@ -150,5 +150,5 @@ https://developers.google.com/android/guides/setup
 EMULATED ANDROID PHONE AND EMULATED ANDROID WEAR
 http://stackoverflow.com/questions/25205888/pairing-android-and-wear-emulators
 https://developer.android.com/training/wearables/apps/creating.html
-
 http://www.tech-recipes.com/rx/49586/how-do-i-connect-an-android-wear-emulator-to-a-real-phone/
+
